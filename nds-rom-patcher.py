@@ -12,7 +12,7 @@
 # 00004EA4: 1E FF 2F E1 → D5 FD FF EA
 # ...
 
-import argparse, binascii, os, re, shutil, sys
+import argparse, binascii, os, re, shutil
 
 def binpatch(input_file, output_file, offset, find, replace):
 	# Remove the output ROM if it already exists
@@ -21,26 +21,25 @@ def binpatch(input_file, output_file, offset, find, replace):
 		shutil.copy(input_file, output_file)
 
 	offset_int = int(offset, 16)
-	find_bytes = find.decode("hex")
-	replace_bytes = replace.decode("hex")
 
 	with open(output_file, "r+b") as rom:
 		# Seek to offset
 		rom.seek(offset_int, os.SEEK_SET)
 		# Read bytes at offset
-		found = binascii.hexlify(rom.read(len(find) / 2)).upper()
+		found = rom.read(int(len(find) / 2)).hex().upper()
+		
 		# Do the bytes read match the find pattern in the patch?
 		if found == find:
 			# Yes. Patch the ROM
 			print("Found @ 0x{0}:\t{1}".format(offset, found))
 			rom.seek(offset_int, os.SEEK_SET)
-			rom.write(replace_bytes)
+			rom.write(binascii.unhexlify(replace))
 			rom.seek(offset_int, os.SEEK_SET)
-			replaced = binascii.hexlify(rom.read(len(find) / 2)).upper()
+			replaced = rom.read(int(len(find) / 2)).hex().upper()
 			print("Replaced with:\t\t{0}".format(replaced))
 		else:
-			# No. The ROM or patch is invalid, so exit
-			print("ERROR: {0} not found, patching failed!".format(find))
+			# No. The ROM or patch is invalid, or new patch detected, so exit
+			print("ERROR: {0} not found, patching either finished or failed!".format(find))
 			exit(2)
 	rom.close()
 

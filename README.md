@@ -19,7 +19,7 @@ This patcher uses the same patch format as OpenPatcher/DS Scene ROM Tool. An exa
 
 ### Usage
 ```
-$ ./ds-rom-patch.py rom.nds patch.txt rom_patched.nds
+$ ./nds-rom-patcher.py rom.nds patch.txt rom_patched.nds
 Input ROM: rom.nds (CRC32: B552501C)
 Patch for B552501C found on line 1
 Found @ 0x00004600:	B0688A0079AA1972139AB69FE1CC8B10
